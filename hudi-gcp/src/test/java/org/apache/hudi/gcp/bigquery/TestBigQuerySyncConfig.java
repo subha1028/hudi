@@ -98,27 +98,27 @@ public class TestBigQuerySyncConfig {
     Properties props0 = new Properties();
     BigQuerySyncConfig config0 = new BigQuerySyncConfig(props0);
     assertNull(config0.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-            String.format("should get null due to absence of both %s and %s",
-                    HoodieTableConfig.PARTITION_FIELDS.key(), KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
+        String.format("should get null due to absence of both %s and %s",
+            HoodieTableConfig.PARTITION_FIELDS.key(), KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
 
     Properties props1 = new Properties();
     props1.setProperty(HoodieTableConfig.PARTITION_FIELDS.key(), "foo,bar,baz");
     BigQuerySyncConfig config1 = new BigQuerySyncConfig(props1);
     assertEquals("foo,bar,baz", config1.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-            String.format("should infer from %s", HoodieTableConfig.PARTITION_FIELDS.key()));
+        String.format("should infer from %s", HoodieTableConfig.PARTITION_FIELDS.key()));
 
     Properties props2 = new Properties();
     props2.setProperty(KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key(), "foo,bar");
     BigQuerySyncConfig config2 = new BigQuerySyncConfig(props2);
     assertEquals("foo,bar", config2.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-            String.format("should infer from %s", KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
+        String.format("should infer from %s", KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
 
     Properties props3 = new Properties();
     props3.setProperty(HoodieTableConfig.PARTITION_FIELDS.key(), "foo,bar,baz");
     props3.setProperty(KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key(), "foo,bar");
     BigQuerySyncConfig config3 = new BigQuerySyncConfig(props3);
     assertEquals("foo,bar,baz", config3.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-            String.format("should infer from %s, which has higher precedence.", HoodieTableConfig.PARTITION_FIELDS.key()));
+        String.format("should infer from %s, which has higher precedence.", HoodieTableConfig.PARTITION_FIELDS.key()));
 
   }
 

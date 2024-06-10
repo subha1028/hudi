@@ -65,10 +65,10 @@ public class TestHoodieBigQuerySyncClient {
   static void setupOnce() throws Exception {
     basePath = tempDir.toString();
     HoodieTableMetaClient.withPropertyBuilder()
-            .setTableType(HoodieTableType.COPY_ON_WRITE)
-            .setTableName(TEST_TABLE)
-            .setPayloadClass(HoodieAvroPayload.class)
-            .initTable(new Configuration(), basePath);
+        .setTableType(HoodieTableType.COPY_ON_WRITE)
+        .setTableName(TEST_TABLE)
+        .setPayloadClass(HoodieAvroPayload.class)
+        .initTable(new Configuration(), basePath);
   }
 
   @BeforeEach
@@ -100,10 +100,10 @@ public class TestHoodieBigQuerySyncClient {
 
     QueryJobConfiguration configuration = jobInfoCaptor.getValue().getConfiguration();
     assertEquals(configuration.getQuery(),
-            String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) WITH PARTITION COLUMNS WITH CONNECTION `my-project.us.bl_connection` "
-                            + "OPTIONS (enable_list_inference=true, hive_partition_uri_prefix=\"%s\", "
-                            + "require_hive_partition_filter=true, uris=[\"%s\"], format=\"PARQUET\", file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")",
-                    PROJECT_ID, TEST_DATASET, TEST_TABLE, SOURCE_PREFIX, MANIFEST_FILE_URI));
+        String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) WITH PARTITION COLUMNS WITH CONNECTION `my-project.us.bl_connection` "
+                + "OPTIONS (enable_list_inference=true, hive_partition_uri_prefix=\"%s\", "
+                + "require_hive_partition_filter=true, uris=[\"%s\"], format=\"PARQUET\", file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")",
+            PROJECT_ID, TEST_DATASET, TEST_TABLE, SOURCE_PREFIX, MANIFEST_FILE_URI));
   }
 
   @Test
@@ -124,7 +124,7 @@ public class TestHoodieBigQuerySyncClient {
 
     QueryJobConfiguration configuration = jobInfoCaptor.getValue().getConfiguration();
     assertEquals(configuration.getQuery(),
-            String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) OPTIONS (enable_list_inference=true, uris=[\"%s\"], format=\"PARQUET\", "
-                    + "file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")", PROJECT_ID, TEST_DATASET, TEST_TABLE, MANIFEST_FILE_URI));
+        String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) OPTIONS (enable_list_inference=true, uris=[\"%s\"], format=\"PARQUET\", "
+            + "file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")", PROJECT_ID, TEST_DATASET, TEST_TABLE, MANIFEST_FILE_URI));
   }
 }
