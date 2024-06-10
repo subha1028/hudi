@@ -48,6 +48,7 @@ import static org.mockito.Mockito.when;
 
 public class TestHoodieBigQuerySyncClient {
   private static final String PROJECT_ID = "test_project";
+  private static final String PARENT_PROJECT_ID = "test_project";
   private static final String MANIFEST_FILE_URI = "file:/manifest_file";
   private static final String SOURCE_PREFIX = "file:/manifest_file/date=*";
   private static final String TEST_TABLE = "test_table";
@@ -64,16 +65,17 @@ public class TestHoodieBigQuerySyncClient {
   static void setupOnce() throws Exception {
     basePath = tempDir.toString();
     HoodieTableMetaClient.withPropertyBuilder()
-        .setTableType(HoodieTableType.COPY_ON_WRITE)
-        .setTableName(TEST_TABLE)
-        .setPayloadClass(HoodieAvroPayload.class)
-        .initTable(new Configuration(), basePath);
+            .setTableType(HoodieTableType.COPY_ON_WRITE)
+            .setTableName(TEST_TABLE)
+            .setPayloadClass(HoodieAvroPayload.class)
+            .initTable(new Configuration(), basePath);
   }
 
   @BeforeEach
   void setup() {
     properties = new Properties();
     properties.setProperty(BigQuerySyncConfig.BIGQUERY_SYNC_PROJECT_ID.key(), PROJECT_ID);
+    properties.setProperty(BigQuerySyncConfig.BIGQUERY_SYNC_PROJECT_ID.key(), PARENT_PROJECT_ID);
     properties.setProperty(BigQuerySyncConfig.BIGQUERY_SYNC_DATASET_NAME.key(), TEST_DATASET);
     properties.setProperty(HoodieSyncConfig.META_SYNC_BASE_PATH.key(), tempDir.toString());
     properties.setProperty(BigQuerySyncConfig.BIGQUERY_SYNC_REQUIRE_PARTITION_FILTER.key(), "true");
@@ -98,10 +100,10 @@ public class TestHoodieBigQuerySyncClient {
 
     QueryJobConfiguration configuration = jobInfoCaptor.getValue().getConfiguration();
     assertEquals(configuration.getQuery(),
-        String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) WITH PARTITION COLUMNS WITH CONNECTION `my-project.us.bl_connection` "
-                + "OPTIONS (enable_list_inference=true, hive_partition_uri_prefix=\"%s\", "
-                + "require_hive_partition_filter=true, uris=[\"%s\"], format=\"PARQUET\", file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")",
-            PROJECT_ID, TEST_DATASET, TEST_TABLE, SOURCE_PREFIX, MANIFEST_FILE_URI));
+            String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) WITH PARTITION COLUMNS WITH CONNECTION `my-project.us.bl_connection` "
+                            + "OPTIONS (enable_list_inference=true, hive_partition_uri_prefix=\"%s\", "
+                            + "require_hive_partition_filter=true, uris=[\"%s\"], format=\"PARQUET\", file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")",
+                    PROJECT_ID, TEST_DATASET, TEST_TABLE, SOURCE_PREFIX, MANIFEST_FILE_URI));
   }
 
   @Test
@@ -122,7 +124,7 @@ public class TestHoodieBigQuerySyncClient {
 
     QueryJobConfiguration configuration = jobInfoCaptor.getValue().getConfiguration();
     assertEquals(configuration.getQuery(),
-        String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) OPTIONS (enable_list_inference=true, uris=[\"%s\"], format=\"PARQUET\", "
-            + "file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")", PROJECT_ID, TEST_DATASET, TEST_TABLE, MANIFEST_FILE_URI));
+            String.format("CREATE OR REPLACE EXTERNAL TABLE `%s.%s.%s` ( `field` STRING ) OPTIONS (enable_list_inference=true, uris=[\"%s\"], format=\"PARQUET\", "
+                    + "file_set_spec_type=\"NEW_LINE_DELIMITED_MANIFEST\")", PROJECT_ID, TEST_DATASET, TEST_TABLE, MANIFEST_FILE_URI));
   }
 }

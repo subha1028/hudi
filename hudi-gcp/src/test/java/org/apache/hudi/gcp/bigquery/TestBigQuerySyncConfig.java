@@ -34,6 +34,7 @@ import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_DATA
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_DATASET_NAME;
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_PARTITION_FIELDS;
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_PROJECT_ID;
+import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_PARENT_PROJECT_ID;
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_SOURCE_URI;
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_SOURCE_URI_PREFIX;
 import static org.apache.hudi.gcp.bigquery.BigQuerySyncConfig.BIGQUERY_SYNC_SYNC_BASE_PATH;
@@ -49,6 +50,7 @@ public class TestBigQuerySyncConfig {
   public void testGetConfigs() {
     Properties props = new Properties();
     props.setProperty(BIGQUERY_SYNC_PROJECT_ID.key(), "fooproject");
+    props.setProperty(BIGQUERY_SYNC_PARENT_PROJECT_ID.key(), "fooproject");
     props.setProperty(BIGQUERY_SYNC_DATASET_NAME.key(), "foodataset");
     props.setProperty(BIGQUERY_SYNC_DATASET_LOCATION.key(), "US");
     props.setProperty(BIGQUERY_SYNC_TABLE_NAME.key(), "footable");
@@ -61,6 +63,7 @@ public class TestBigQuerySyncConfig {
     props.setProperty(BIGQUERY_SYNC_ASSUME_DATE_PARTITIONING.key(), "true");
     BigQuerySyncConfig syncConfig = new BigQuerySyncConfig(props);
     assertEquals("fooproject", syncConfig.getString(BIGQUERY_SYNC_PROJECT_ID));
+    assertEquals("fooproject", syncConfig.getString(BIGQUERY_SYNC_PARENT_PROJECT_ID));
     assertEquals("foodataset", syncConfig.getString(BIGQUERY_SYNC_DATASET_NAME));
     assertEquals("US", syncConfig.getString(BIGQUERY_SYNC_DATASET_LOCATION));
     assertEquals("footable", syncConfig.getString(BIGQUERY_SYNC_TABLE_NAME));
@@ -95,27 +98,27 @@ public class TestBigQuerySyncConfig {
     Properties props0 = new Properties();
     BigQuerySyncConfig config0 = new BigQuerySyncConfig(props0);
     assertNull(config0.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-        String.format("should get null due to absence of both %s and %s",
-            HoodieTableConfig.PARTITION_FIELDS.key(), KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
+            String.format("should get null due to absence of both %s and %s",
+                    HoodieTableConfig.PARTITION_FIELDS.key(), KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
 
     Properties props1 = new Properties();
     props1.setProperty(HoodieTableConfig.PARTITION_FIELDS.key(), "foo,bar,baz");
     BigQuerySyncConfig config1 = new BigQuerySyncConfig(props1);
     assertEquals("foo,bar,baz", config1.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-        String.format("should infer from %s", HoodieTableConfig.PARTITION_FIELDS.key()));
+            String.format("should infer from %s", HoodieTableConfig.PARTITION_FIELDS.key()));
 
     Properties props2 = new Properties();
     props2.setProperty(KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key(), "foo,bar");
     BigQuerySyncConfig config2 = new BigQuerySyncConfig(props2);
     assertEquals("foo,bar", config2.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-        String.format("should infer from %s", KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
+            String.format("should infer from %s", KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key()));
 
     Properties props3 = new Properties();
     props3.setProperty(HoodieTableConfig.PARTITION_FIELDS.key(), "foo,bar,baz");
     props3.setProperty(KeyGeneratorOptions.PARTITIONPATH_FIELD_NAME.key(), "foo,bar");
     BigQuerySyncConfig config3 = new BigQuerySyncConfig(props3);
     assertEquals("foo,bar,baz", config3.getString(BIGQUERY_SYNC_PARTITION_FIELDS),
-        String.format("should infer from %s, which has higher precedence.", HoodieTableConfig.PARTITION_FIELDS.key()));
+            String.format("should infer from %s, which has higher precedence.", HoodieTableConfig.PARTITION_FIELDS.key()));
 
   }
 
