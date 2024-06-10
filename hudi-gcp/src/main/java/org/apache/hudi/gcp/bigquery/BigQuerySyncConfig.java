@@ -58,6 +58,13 @@ public class BigQuerySyncConfig extends HoodieSyncConfig implements Serializable
       .markAdvanced()
       .withDocumentation("Name of the target project in BigQuery");
 
+
+  public static final ConfigProperty<String> BIGQUERY_SYNC_PARENT_PROJECT_ID = ConfigProperty
+      .key("hoodie.gcp.bigquery.sync.parent_project_id")
+      .noDefaultValue()
+      .markAdvanced()
+      .withDocumentation("Name of the Billing Parent project in BigQuery");
+
   public static final ConfigProperty<String> BIGQUERY_SYNC_DATASET_NAME = ConfigProperty
       .key("hoodie.gcp.bigquery.sync.dataset_name")
       .noDefaultValue()
@@ -156,6 +163,8 @@ public class BigQuerySyncConfig extends HoodieSyncConfig implements Serializable
 
     @Parameter(names = {"--project-id"}, description = "Name of the target project in BigQuery", required = true)
     public String projectId;
+    @Parameter(names = {"--parent-project-id"}, description = "Name of the parent billing project in BigQuery", required = false)
+    public String parentProjectId;
     @Parameter(names = {"--dataset-name"}, description = "Name of the target dataset in BigQuery", required = true)
     public String datasetName;
     @Parameter(names = {"--dataset-location"}, description = "Location of the target dataset in BigQuery", required = true)
@@ -181,6 +190,7 @@ public class BigQuerySyncConfig extends HoodieSyncConfig implements Serializable
     public TypedProperties toProps() {
       final TypedProperties props = hoodieSyncConfigParams.toProps();
       props.setPropertyIfNonNull(BIGQUERY_SYNC_PROJECT_ID.key(), projectId);
+      props.setPropertyIfNonNull(BIGQUERY_SYNC_PARENT_PROJECT_ID.key(), parentProjectId);
       props.setPropertyIfNonNull(BIGQUERY_SYNC_DATASET_NAME.key(), datasetName);
       props.setPropertyIfNonNull(BIGQUERY_SYNC_DATASET_LOCATION.key(), datasetLocation);
       props.setPropertyIfNonNull(BIGQUERY_SYNC_TABLE_NAME.key(), hoodieSyncConfigParams.tableName);
